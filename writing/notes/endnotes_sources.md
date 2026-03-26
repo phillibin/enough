@@ -72,3 +72,21 @@ The Left Hand of Darkness (1969). The Foretellers can answer any question accura
 
 ### Paul
 1 Corinthians 13. Faith, hope, charity. "When I was a child, I spoke as a child." Not denigrating childish things — graduating from them. The serpents are scaffolding. Charity is the foolish act that breaks the serpent's loop. "Effective altruism" is the moneysnake co-opting charity. The break has to be invisible to the serpent.
+
+### Hildegard von Bingen
+Scivias (1151). Viriditas — the greening force, life as a property of reality, not something that emerges from dead matter. Goff's panpsychism eight centuries earlier, dressed in theology. The cosmic tree, humanity as mirror of the macrocosm — she was describing the garden. The earliest voice (after Paul) seeing the substrate directly. Also the method: ecstatic vision to reach truths that argument can't. Herzog before Herzog.
+
+### Stewart Brand
+The Clock of the Long Now (1999). Pace Layers — civilization moves at different speeds. Fashion fastest, then commerce, infrastructure, governance, culture, nature slowest. "Fast learns, slow remembers. Fast proposes, slow disposes. The whole combines learning with continuity." This is the non-denigration of childish things in systems language. The fast layers (the serpents) aren't wrong to be fast. The slow layers (the garden) absorb what's worth keeping. The moneysnake is the commerce layer — gets all our attention. The garden has all the power.
+
+### Solzhenitsyn
+"Live Not by Lies" (1974). The individual act that breaks the system's logic by refusing to participate. Living "as if" the serpent doesn't own you. Not a revolution — a withdrawal of consent that, if enough people do it simultaneously, is a phase transition. Connects bullshit serpent to violence serpent: "violence can conceal itself with nothing except lies, and lies can be maintained only by violence." Soviet joke tradition as proof the humor snake survives the violence serpent.
+
+### Harry Frankfurt
+On Bullshit (1986/2005). The bullshitter isn't the liar's cousin — something worse. The liar respects truth enough to subvert it. The bullshitter is indifferent to truth. The bullshit serpent isn't the opposite of truth, it's orthogonal to truth. That's why it's so hard to kill — you can't disprove something that was never trying to be true.
+
+### George Orwell
+Politics and the English Language (1946). 1984 (1949). The mechanics of how language and violence reinforce each other. Solzhenitsyn's point from the other side of the curtain.
+
+### David St. Hubbins
+"It's such a fine line between stupid and clever."
