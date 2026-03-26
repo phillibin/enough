@@ -18,7 +18,7 @@ The moneysnake grew from a clay token or a shell or a tally stick. A thing that 
 
 Debt is personal but money is viral. The natural governor came off.
 
-Even the hygiene was better. When debt fails, it destroys circulation. Use violence to collect an unpaid debt? Break someone's legs, burn their crops, cast them out of the community? No one wins and the network shrinks a little. But with money, failure mode *creates* circulation: collection agencies, lawyers, fees, penalties, refinancing, restructuring, consolidation... Every dollar spent trying to fix a failure is still a dollar moving. The serpent gets fed whether your debt is repaid or not. Throwing good money after bad? From the moneysnake's point of view: that's a feature, not a bug.
+Even the hygiene was better. When debt fails, it destroys circulation. Use violence to collect an unpaid debt? Break someone's legs, burn their crops, cast them out of the community? No one wins and the circle shrinks a little. But with money, failure mode *creates* circulation: collection agencies, lawyers, fees, penalties, refinancing, restructuring, consolidation... Every dollar spent trying to fix a failure is still a dollar moving. The serpent gets fed whether your debt is repaid or not. Throwing good money after bad? From the moneysnake's point of view: that's a feature, not a bug.
 
 The moneysnake doesn't care if you have more money. It just wants there to be more money.
 
