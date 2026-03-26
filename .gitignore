@@ -1,0 +1,7 @@
+.env
+site/node_modules/
+site/dist/
+site/.astro/
+__pycache__/
+*.pyc
+.DS_Store

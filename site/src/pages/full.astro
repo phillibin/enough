@@ -1,0 +1,121 @@
+---
+import Base from "../layouts/Base.astro";
+import { getFullText } from "../lib/drafts";
+
+const sections = getFullText();
+---
+
+<Base title="Moneysnake: A Speculative Biography — Full Draft">
+  <article class="prose prose-stone prose-lg max-w-none
+    prose-headings:font-serif
+    prose-p:font-serif prose-p:leading-relaxed prose-p:text-[1.15rem]
+    prose-li:font-serif
+    prose-em:text-stone-700
+    prose-hr:border-stone-300 prose-hr:my-12
+    prose-blockquote:border-stone-300 prose-blockquote:font-serif">
+
+    <h1 class="text-4xl font-serif font-medium tracking-tight mb-2">Moneysnake</h1>
+    <p class="text-lg font-serif text-stone-500 mt-0 mb-16 italic">A Speculative Biography — Full Draft</p>
+
+    {sections.map((section, i) => (
+      <Fragment>
+        <section set:html={section.html} />
+        {i < sections.length - 1 && <hr />}
+      </Fragment>
+    ))}
+  </article>
+
+  <div id="slop-widget" class="fixed bottom-6 right-6 z-50 font-sans">
+    <div id="slop-legend" class="hidden mb-2 bg-stone-800 text-stone-200 rounded-lg shadow-2xl p-3 text-xs">
+      <div class="flex items-center gap-2 mb-1.5">
+        <div class="w-full h-2.5 rounded-sm" style="background: linear-gradient(to right, rgba(34,170,34,0.4), rgba(200,170,10,0.4), rgba(220,30,10,0.5));"></div>
+      </div>
+      <div class="flex justify-between text-stone-500 mb-2">
+        <span>human</span>
+        <span>AI</span>
+      </div>
+      <div class="text-stone-500">Scores by <a href="https://gptzero.me" target="_blank" class="underline hover:text-stone-300">GPTZero</a></div>
+    </div>
+    <button
+      id="slop-toggle"
+      class="block ml-auto bg-stone-800 text-stone-100 text-sm
+             px-4 py-2 rounded-full shadow-lg hover:bg-stone-700 transition-colors
+             cursor-pointer"
+    >
+      Show slop map
+    </button>
+  </div>
+
+  <style is:global>
+    .slop-sentence {
+      transition: background-color 0.2s ease;
+    }
+
+    .slop-active .slop-sentence {
+      border-radius: 2px;
+      padding: 1px 0;
+    }
+
+    .slop-active .slop-sentence::after {
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 0.65rem;
+      vertical-align: super;
+      margin-left: 2px;
+      opacity: 0.6;
+    }
+  </style>
+
+  <script>
+    const toggle = document.getElementById("slop-toggle")!;
+    const legend = document.getElementById("slop-legend")!;
+    let active = false;
+
+    function slopColor(score: number): string {
+      if (score < 0.5) {
+        const t = score / 0.5;
+        const r = Math.round(34 + t * (200 - 34));
+        const g = Math.round(170 + t * (170 - 170));
+        const b = Math.round(34 + t * (10 - 34));
+        return `rgba(${r}, ${g}, ${b}, 0.15)`;
+      } else {
+        const t = (score - 0.5) / 0.5;
+        const r = Math.round(200 + t * (220 - 200));
+        const g = Math.round(170 - t * 140);
+        const b = Math.round(10);
+        return `rgba(${r}, ${g}, ${b}, 0.25)`;
+      }
+    }
+
+    function applyColors() {
+      document.querySelectorAll(".slop-sentence").forEach((el) => {
+        const span = el as HTMLElement;
+        const score = parseFloat(span.dataset.slop || "0");
+        span.style.backgroundColor = slopColor(score);
+        span.title = `${(score * 100).toFixed(0)}% AI`;
+      });
+    }
+
+    function clearColors() {
+      document.querySelectorAll(".slop-sentence").forEach((el) => {
+        const span = el as HTMLElement;
+        span.style.backgroundColor = "";
+        span.title = "";
+      });
+    }
+
+    toggle.addEventListener("click", () => {
+      active = !active;
+      document.body.classList.toggle("slop-active", active);
+
+      if (active) {
+        applyColors();
+        legend.classList.remove("hidden");
+        toggle.textContent = "Hide slop map";
+      } else {
+        clearColors();
+        legend.classList.add("hidden");
+        toggle.textContent = "Show slop map";
+      }
+    });
+  </script>
+</Base>
