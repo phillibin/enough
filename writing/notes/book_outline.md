@@ -32,6 +32,7 @@ The serpents:
 - **Bullshit** — Frankfurt's definition (indifferent to truth, not opposed to it). Graeber's jobs. Older than money.
 - **Violence & War** — violence is the act, war is the institution. Money upgraded violence into war.
 - **Humor** — the garden's immune system. Soviet jokes outlasted the Soviet Union.
+- **Slopsnake** (candidate) — slop used to cost ~60% of making something great; now it's free. Most slop is AI slop, but nothing about slop is AI — the signature (hedged phrasing, balanced rhythm, empty connective tissue, over-qualification) predates LLMs. AI didn't invent slop, it collapsed the production cost and flooded the biome. Possibly a subspecies of bullshit rather than its own organism — decide later.
 
 Status: NOT STARTED. Three-axis essay exists as seed material for bullshit.
 
@@ -72,6 +73,7 @@ A policy proposal. An economics textbook. A theology. Anti-capitalist polemic. P
 - Book of Job as possible satire — God and Satan making a bet is structurally a joke setup.
 - The serpent counts heartbeats, not blood volume. "More" means more transactions, not bigger numbers. Inflation forces velocity. Deflation is the serpent's nightmare — hoarding becomes rational. The dragon wins.
 - Need rigorous treatment of inflation — the serpent's metric isn't money supply, it's something like total transaction volume × number of participants. Hand-waving not sufficient here.
+- "Slop used to cost 60% of making something great. Now slop is free, so most slop is AI slop — but there's nothing specifically AI about it." The detectors aren't AI detectors, they're slop detectors; they just happen to be useful now because the production cost collapsed.
 
 ### Open Questions
 - Title: "Moneysnake: A Speculative Biography" vs "Enough: A Story With Snakes"?
