@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>prose stats · raw · enough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;450;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #2a2520;
+    --paper: #faf7f2;
+    --rule: #e8e0d4;
+    --rule-soft: #f0ebe0;
+    --muted: #8a7f70;
+    --mutedder: #b4ac9c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .serif { font-family: "EB Garamond", Georgia, serif; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .muted { color: var(--muted); }
+  .mutedder { color: var(--mutedder); }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  header.top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  h1 { font-family: "EB Garamond", Georgia, serif; font-size: 30px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  h2 {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 14px 0;
+  }
+  h3 {
+    font-family: "EB Garamond", Georgia, serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+
+  /* comparison table */
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.cmp th, table.cmp td {
+    padding: 6px 12px;
+    text-align: right;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  table.cmp th:first-child, table.cmp td:first-child {
+    text-align: left;
+    font-weight: 400;
+    color: var(--ink);
+    padding-left: 0;
+  }
+  table.cmp th:first-child { color: var(--muted); }
+  table.cmp thead th {
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--rule);
+    padding-top: 2px;
+    padding-bottom: 8px;
+  }
+  table.cmp thead th.section-head { color: var(--ink); font-family: "EB Garamond", serif; font-size: 16px; font-weight: 600; }
+  table.cmp .num { font-family: "JetBrains Mono", monospace; font-size: 12px; }
+  table.cmp tr.group-start td { padding-top: 14px; }
+  table.cmp tr.group-start td:first-child { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; padding-top: 18px; padding-bottom: 2px; border-bottom: none; font-weight: 500; }
+  table.cmp tr.group-start td:not(:first-child) { border-bottom: none; }
+  table.cmp tr:hover td { background: #f5ede0; }
+  table.cmp td.unit { color: var(--mutedder); font-family: "JetBrains Mono", monospace; font-size: 11px; padding-left: 4px; text-align: left; }
+
+  .tool-badge {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    background: #ece4d4;
+    color: var(--muted);
+    vertical-align: middle;
+  }
+
+  /* per-section deep dive */
+  section.section {
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+    margin-top: 40px;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .section-header .status {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+  .status.polished { background: #e0ead9; color: #3d5132; }
+  .status.rough { background: #efe7d2; color: #6a5c36; }
+  .section-header .meta { color: var(--muted); font-family: "JetBrains Mono", monospace; font-size: 12px; }
+
+  .deep-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 28px;
+  }
+
+  /* sentence-length histogram */
+  .histogram {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 11px;
+  }
+  .histogram .row {
+    display: grid;
+    grid-template-columns: 50px 1fr 28px;
+    align-items: center;
+    gap: 8px;
+  }
+  .histogram .label { font-family: "JetBrains Mono", monospace; color: var(--muted); text-align: right; font-size: 11px; }
+  .histogram .bar-wrap { height: 14px; display: flex; align-items: center; }
+  .histogram .bar { height: 10px; background: #c6b28f; border-radius: 1px; }
+  .histogram .count { font-family: "JetBrains Mono", monospace; color: var(--ink); font-size: 11px; text-align: right; }
+
+  /* sentence list (long/short/word freq) */
+  ul.list { margin: 0; padding: 0; list-style: none; }
+  ul.list li { padding: 4px 0; border-bottom: 1px dotted var(--rule-soft); display: flex; align-items: baseline; gap: 10px; }
+  ul.list li:last-child { border-bottom: none; }
+  ul.list .k { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--muted); min-width: 28px; text-align: right; }
+  ul.list .v { font-family: "EB Garamond", Georgia, serif; font-size: 14px; font-style: italic; }
+  ul.list .v.plain { font-family: "Inter", sans-serif; font-style: normal; font-size: 13px; }
+
+  /* placeholder (not-yet-wired) */
+  .stub {
+    background: #f5ede0;
+    border: 1px dashed #d8ceba;
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .stub strong { color: var(--ink); font-weight: 500; }
+  .stub pre {
+    margin-top: 10px;
+    background: #faf4e7;
+    padding: 10px 12px;
+    border-radius: 3px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ink);
+    line-height: 1.5;
+    overflow-x: auto;
+  }
+
+  .group-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  footer.bottom {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  footer.bottom strong { color: var(--ink); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="top">
+    <div>
+      <h1>prose stats · raw</h1>
+      <p class="muted" style="margin: 4px 0 0; font-size: 13px;">enough · moneysnake · every tool at its native granularity</p>
+    </div>
+    <div class="mono muted" style="text-align: right; font-size: 11px;">
+      <div>run 2026-04-21 12:14</div>
+      <div style="margin-top: 4px;">3 sections · 2,120 bytes analysed</div>
+    </div>
+  </header>
+
+  <!-- cross-section comparison: document-level metrics -->
+  <section>
+    <h2>document-level metrics</h2>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="section-head">01_opening</th>
+          <th class="section-head">02_debt</th>
+          <th class="section-head">03_coins_banking</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="group-start"><td>counts <span class="tool-badge">stdlib</span></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>word_count</td><td class="num">113</td><td class="num">557</td><td class="num">485</td><td class="unit">words</td></tr>
+        <tr><td>sentence_count</td><td class="num">18</td><td class="num">61</td><td class="num">58</td><td class="unit">sentences</td></tr>
+        <tr><td>unique_words</td><td class="num">86</td><td class="num">293</td><td class="num">260</td><td class="unit">types</td></tr>
+        <tr><td>total_syllables</td><td class="num">153</td><td class="num">830</td><td class="num">710</td><td class="unit">syllables</td></tr>
+        <tr><td>complex_words (≥3 syl)</td><td class="num">6</td><td class="num">62</td><td class="num">50</td><td class="unit">words</td></tr>
+
+        <tr class="group-start"><td>length <span class="tool-badge">stdlib</span></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>avg_word_length</td><td class="num">4.41</td><td class="num">4.58</td><td class="num">4.59</td><td class="unit">chars</td></tr>
+        <tr><td>stdev_word_length</td><td class="num">2.04</td><td class="num">2.33</td><td class="num">2.21</td><td class="unit">chars</td></tr>
+        <tr><td>avg_sentence_length</td><td class="num">6.28</td><td class="num">9.13</td><td class="num">8.36</td><td class="unit">words</td></tr>
+        <tr><td>stdev_sentence_length</td><td class="num">3.55</td><td class="num">4.33</td><td class="num">5.29</td><td class="unit">words</td></tr>
+        <tr><td>min_sentence_length</td><td class="num">2</td><td class="num">1</td><td class="num">1</td><td class="unit">words</td></tr>
+        <tr><td>max_sentence_length</td><td class="num">17</td><td class="num">18</td><td class="num">20</td><td class="unit">words</td></tr>
+
+        <tr class="group-start"><td>burstiness <span class="tool-badge">stdlib</span></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>sentence_length_cv</td><td class="num">0.565</td><td class="num">0.474</td><td class="num">0.632</td><td class="unit">σ/μ</td></tr>
+
+        <tr class="group-start"><td>vocabulary <span class="tool-badge">stdlib</span></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>ttr (whole text)</td><td class="num">0.761</td><td class="num">0.526</td><td class="num">0.536</td><td class="unit">unique/total</td></tr>
+        <tr><td>mattr_100 (sliding window)</td><td class="num muted">n/a</td><td class="num">0.747</td><td class="num">0.719</td><td class="unit">avg 100-w win</td></tr>
+        <tr><td>hapax_count</td><td class="num">70</td><td class="num">213</td><td class="num">192</td><td class="unit">once-only</td></tr>
+        <tr><td>hapax_ratio</td><td class="num">0.619</td><td class="num">0.382</td><td class="num">0.396</td><td class="unit">of total</td></tr>
+
+        <tr class="group-start"><td>readability <span class="tool-badge">stdlib</span></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>flesch_ease</td><td class="num">85.9</td><td class="num">71.5</td><td class="num">74.5</td><td class="unit">higher=easier</td></tr>
+        <tr><td>flesch_kincaid_grade</td><td class="num">2.8</td><td class="num">5.6</td><td class="num">4.9</td><td class="unit">US grade</td></tr>
+        <tr><td>gunning_fog</td><td class="num">4.6</td><td class="num">8.1</td><td class="num">7.5</td><td class="unit">US grade</td></tr>
+        <tr><td>smog</td><td class="num">6.4</td><td class="num">8.9</td><td class="num">8.4</td><td class="unit">US grade</td></tr>
+
+        <tr class="group-start"><td>concreteness <span class="tool-badge">wordtangible</span></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td colspan="5" class="muted" style="padding: 6px 0 2px; font-style: italic; font-size: 12px;">not yet wired · will emit avg Brysbaert score per section + per sentence</td></tr>
+
+        <tr class="group-start"><td>pangram <span class="tool-badge">api</span></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>prediction</td><td class="num">Human</td><td class="num">Human</td><td class="num">AI</td><td class="unit">overall label</td></tr>
+        <tr><td>fraction_ai</td><td class="num">0.00</td><td class="num">0.00</td><td class="num">1.00</td><td class="unit">0–1</td></tr>
+        <tr><td>fraction_ai_assisted</td><td class="num">0.00</td><td class="num">0.00</td><td class="num">0.00</td><td class="unit">0–1</td></tr>
+        <tr><td>fraction_human</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">0.00</td><td class="unit">0–1</td></tr>
+        <tr><td>num_ai_segments</td><td class="num">0</td><td class="num">0</td><td class="num">2</td><td class="unit">segs</td></tr>
+        <tr><td>num_human_segments</td><td class="num">1</td><td class="num">2</td><td class="num">0</td><td class="unit">segs</td></tr>
+        <tr><td>max_window_score</td><td class="num">0.07</td><td class="num">0.21</td><td class="num">0.98</td><td class="unit">worst seg</td></tr>
+        <tr><td>confidence (max)</td><td class="num">Medium</td><td class="num">Medium</td><td class="num">High</td><td class="unit"></td></tr>
+
+      </tbody>
+    </table>
+  </section>
+
+  <!-- section 01 -->
+  <section class="section">
+    <div class="section-header">
+      <h3>01_opening</h3>
+      <span class="status polished">polished</span>
+      <span class="meta">113 words · 18 sentences</span>
+    </div>
+
+    <div class="deep-grid">
+
+      <div>
+        <div class="group-title">sentence-length distribution <span class="tool-badge">stdlib</span></div>
+        <div class="histogram">
+          <div class="row"><span class="label">1–5</span><div class="bar-wrap"><div class="bar" style="width: 100%;"></div></div><span class="count">9</span></div>
+          <div class="row"><span class="label">6–10</span><div class="bar-wrap"><div class="bar" style="width: 78%;"></div></div><span class="count">7</span></div>
+          <div class="row"><span class="label">11–15</span><div class="bar-wrap"><div class="bar" style="width: 11%;"></div></div><span class="count">1</span></div>
+          <div class="row"><span class="label">16–20</span><div class="bar-wrap"><div class="bar" style="width: 11%;"></div></div><span class="count">1</span></div>
+          <div class="row"><span class="label">21–25</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">26–30</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">31–40</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">41+</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="group-title">longest / shortest sentences <span class="tool-badge">stdlib</span></div>
+        <ul class="list">
+          <li><span class="k">17</span><span class="v">"An omniscient god walking through the garden, calling out for a naked man crouched behind a bush."</span></li>
+          <li><span class="k">11</span><span class="v">"They all were, back to the first one in the tree."</span></li>
+          <li><span class="k">10</span><span class="v">"Once you know good and evil, you know what's absurd."</span></li>
+          <li><span class="k">4</span><span class="v">"The serpent was subtle."</span></li>
+          <li><span class="k">3</span><span class="v">"Must go faster."</span></li>
+          <li><span class="k">2</span><span class="v">"No lies."</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="group-title">most-used content words <span class="tool-badge">stdlib</span></div>
+        <ul class="list">
+          <li><span class="k">2</span><span class="v plain">first</span></li>
+          <li><span class="k">2</span><span class="v plain">one</span></li>
+          <li><span class="k">2</span><span class="v plain">knowledge</span></li>
+          <li><span class="k">2</span><span class="v plain">good</span></li>
+          <li><span class="k">2</span><span class="v plain">evil</span></li>
+          <li><span class="k">2</span><span class="v plain">ever</span></li>
+          <li><span class="k">2</span><span class="v plain">know</span></li>
+          <li><span class="k mutedder">—</span><span class="v plain mutedder">everything else appears once</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <div class="group-title">pangram · per-window <span class="tool-badge">api</span></div>
+      <table class="cmp" style="font-size: 12px;">
+        <thead>
+          <tr>
+            <th>range (chars)</th>
+            <th>words</th>
+            <th>label</th>
+            <th>score</th>
+            <th>conf</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">0–638</td>
+            <td class="num">113</td>
+            <td>Human Written</td>
+            <td class="num">0.07</td>
+            <td>Medium</td>
+            <td style="text-align: left;" class="muted serif italic">"The serpent was subtle. Of course it was. They all were…"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="stub" style="margin-top: 16px;">
+      <strong>concreteness</strong> · not yet wired · expected: avg Brysbaert 1–5 per section + per-sentence breakdown; lowest/highest sentences listed like above.
+    </div>
+  </section>
+
+  <!-- section 02 -->
+  <section class="section">
+    <div class="section-header">
+      <h3>02_debt</h3>
+      <span class="status polished">polished</span>
+      <span class="meta">557 words · 61 sentences</span>
+    </div>
+
+    <div class="deep-grid">
+
+      <div>
+        <div class="group-title">sentence-length distribution <span class="tool-badge">stdlib</span></div>
+        <div class="histogram">
+          <div class="row"><span class="label">1–5</span><div class="bar-wrap"><div class="bar" style="width: 76%;"></div></div><span class="count">16</span></div>
+          <div class="row"><span class="label">6–10</span><div class="bar-wrap"><div class="bar" style="width: 90%;"></div></div><span class="count">19</span></div>
+          <div class="row"><span class="label">11–15</span><div class="bar-wrap"><div class="bar" style="width: 100%;"></div></div><span class="count">21</span></div>
+          <div class="row"><span class="label">16–20</span><div class="bar-wrap"><div class="bar" style="width: 24%;"></div></div><span class="count">5</span></div>
+          <div class="row"><span class="label">21–25</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">26–30</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">31–40</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">41+</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="group-title">longest / shortest sentences <span class="tool-badge">stdlib</span></div>
+        <ul class="list">
+          <li><span class="k">18</span><span class="v">"But unlike its father, it had a new trick: having money makes it easier to get more money."</span></li>
+          <li><span class="k">17</span><span class="v">"That's not money, that's the serpent's father — older, slower, bound by rules the moneysnake would eventually break."</span></li>
+          <li><span class="k">17</span><span class="v">"By being a neutral measure of other things' value, it became the most valuable thing of all."</span></li>
+          <li><span class="k">3</span><span class="v">"Borrow, owe, repay."</span></li>
+          <li><span class="k">2</span><span class="v">"A shortcut."</span></li>
+          <li><span class="k">1</span><span class="v">"Maybe."</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="group-title">most-used content words <span class="tool-badge">stdlib</span></div>
+        <ul class="list">
+          <li><span class="k">14</span><span class="v plain">debt</span></li>
+          <li><span class="k">9</span><span class="v plain">money</span></li>
+          <li><span class="k">8</span><span class="v plain">serpent</span></li>
+          <li><span class="k">8</span><span class="v plain">more</span></li>
+          <li><span class="k">6</span><span class="v plain">didn't</span></li>
+          <li><span class="k">4</span><span class="v plain">moneysnake</span></li>
+          <li><span class="k">4</span><span class="v plain">father</span></li>
+          <li><span class="k">4</span><span class="v plain">just</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <div class="group-title">pangram · per-window <span class="tool-badge">api</span></div>
+      <table class="cmp" style="font-size: 12px;">
+        <thead>
+          <tr>
+            <th>range (chars)</th>
+            <th>words</th>
+            <th>label</th>
+            <th>score</th>
+            <th>conf</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">0–2023</td>
+            <td class="num">347</td>
+            <td>Human Written</td>
+            <td class="num">0.21</td>
+            <td>Medium</td>
+            <td style="text-align: left;" class="muted serif italic">"Let's suppose that money is a sentient world-serpent…"</td>
+          </tr>
+          <tr>
+            <td class="num">2023–3249</td>
+            <td class="num">208</td>
+            <td>Human Written</td>
+            <td class="num">0.16</td>
+            <td>Medium</td>
+            <td style="text-align: left;" class="muted serif italic">"Invest it, and it returns multiples. By being a neutral measure…"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="stub" style="margin-top: 16px;">
+      <strong>concreteness</strong> · not yet wired · will list sentences with lowest avg concreteness first. Candidates from eyeball: <em>"the system has a natural ceiling," "by being a neutral measure of other things' value."</em>
+    </div>
+  </section>
+
+  <!-- section 03 -->
+  <section class="section">
+    <div class="section-header">
+      <h3>03_coins_banking</h3>
+      <span class="status rough">rough</span>
+      <span class="meta">485 words · 58 sentences</span>
+    </div>
+
+    <div class="deep-grid">
+
+      <div>
+        <div class="group-title">sentence-length distribution <span class="tool-badge">stdlib</span></div>
+        <div class="histogram">
+          <div class="row"><span class="label">1–5</span><div class="bar-wrap"><div class="bar" style="width: 100%;"></div></div><span class="count">21</span></div>
+          <div class="row"><span class="label">6–10</span><div class="bar-wrap"><div class="bar" style="width: 86%;"></div></div><span class="count">18</span></div>
+          <div class="row"><span class="label">11–15</span><div class="bar-wrap"><div class="bar" style="width: 57%;"></div></div><span class="count">12</span></div>
+          <div class="row"><span class="label">16–20</span><div class="bar-wrap"><div class="bar" style="width: 33%;"></div></div><span class="count">7</span></div>
+          <div class="row"><span class="label">21–25</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">26–30</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">31–40</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+          <div class="row"><span class="label">41+</span><div class="bar-wrap"><div class="bar" style="width: 0%;"></div></div><span class="count">0</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="group-title">longest / shortest sentences <span class="tool-badge">stdlib</span></div>
+        <ul class="list">
+          <li><span class="k">20</span><span class="v">"We have a banking section to get through and to grow even faster, the serpent had to shed its scales."</span></li>
+          <li><span class="k">20</span><span class="v">"Now it could be in two places at once — the gold in the vault *and* the loan on the books."</span></li>
+          <li><span class="k">17</span><span class="v">"Now it could move at the speed of a letter, then a telegraph, then a wire transfer."</span></li>
+          <li><span class="k">1</span><span class="v">"Dragons."</span></li>
+          <li><span class="k">1</span><span class="v">"Pffft."</span></li>
+          <li><span class="k">1</span><span class="v">"Morons."</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="group-title">most-used content words <span class="tool-badge">stdlib</span></div>
+        <ul class="list">
+          <li><span class="k">10</span><span class="v plain">could</span></li>
+          <li><span class="k">9</span><span class="v plain">serpent</span></li>
+          <li><span class="k">6</span><span class="v plain">gold</span></li>
+          <li><span class="k">5</span><span class="v plain">had</span></li>
+          <li><span class="k">4</span><span class="v plain">move</span></li>
+          <li><span class="k">4</span><span class="v plain">still</span></li>
+          <li><span class="k">4</span><span class="v plain">every</span></li>
+          <li><span class="k">4</span><span class="v plain">more</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <div class="group-title">pangram · per-window <span class="tool-badge">api</span></div>
+      <table class="cmp" style="font-size: 12px;">
+        <thead>
+          <tr>
+            <th>range (chars)</th>
+            <th>words</th>
+            <th>label</th>
+            <th>score</th>
+            <th>conf</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background: #fdf0ec;">
+            <td class="num">0–2232</td>
+            <td class="num">382</td>
+            <td style="color: #8a3124;">AI-Generated</td>
+            <td class="num" style="color: #8a3124;">0.98</td>
+            <td style="color: #8a3124;">High</td>
+            <td style="text-align: left;" class="muted serif italic">"For thousands of years, the serpent stayed small. Lurking in temples…"</td>
+          </tr>
+          <tr style="background: #fdf0ec;">
+            <td class="num">2232–2834</td>
+            <td class="num">109</td>
+            <td style="color: #8a3124;">AI-Generated</td>
+            <td class="num" style="color: #8a3124;">0.97</td>
+            <td style="color: #8a3124;">High</td>
+            <td style="text-align: left;" class="muted serif italic">"It's how banking still works, right now, today. Your bank has a fraction…"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="stub" style="margin-top: 16px;">
+      <strong>concreteness</strong> · not yet wired.
+    </div>
+  </section>
+
+  <footer class="bottom">
+    <p><strong>What you're looking at.</strong> Every tool at its own native granularity. No percentiles, no normalization, no cross-metric severity blends. Each number is either a count, a ratio, a mean, or a formula output — read directly.</p>
+    <p style="margin-top: 10px;"><strong>Still to wire.</strong> Concreteness (Brysbaert per-word → per-sentence → section avg). LLM-judge (section rubric scores + quoted offenders). Each gets its own block below the per-section deep dives — same layout, more data.</p>
+    <p style="margin-top: 10px;"><strong>Numbers in this mockup.</strong> Real. Stdlib stats from <code>compute_raw.py</code>. Pangram from <code>pangram_probe.py</code> hitting <code>text.api.pangram.com/v3</code>. Raw responses saved to <code>pangram_responses/*.json</code>.</p>
+    <p style="margin-top: 10px;"><strong>What Pangram actually said.</strong> 01 and 02 (both co-authored with Claude, both polished) read as fully human to Pangram, with scores 0.07 and ~0.2. 03 (rough draft) reads as 100% AI at 0.98 / 0.97, High confidence. Consistent with the slop ≠ AI thesis: the detector catches the slop signature, which polish removes regardless of origin.</p>
+  </footer>
+
+</div>
+</body>
+</html>

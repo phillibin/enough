@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>prose stats · enough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --ink: #2a2520;
+    --paper: #faf7f2;
+    --rule: #e8e0d4;
+    --muted: #8a7f70;
+  }
+  body { font-family: "Inter", system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+  .serif { font-family: "EB Garamond", Georgia, serif; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .rule { border-color: var(--rule); }
+  .muted { color: var(--muted); }
+
+  /* metric chips: pill with score + background signalling "quality" */
+  .chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+  .chip .val { font-family: "JetBrains Mono", monospace; font-size: 11px; }
+  .chip .pct { font-size: 10px; opacity: 0.7; }
+
+  /* severity → color.
+     Higher-is-better metrics (burst/concr/ttr): green when percentile high.
+     Pangram: green when score low. */
+  .good   { background: #e0ead9; color: #3d5132; }
+  .ok     { background: #efe7d2; color: #6a5c36; }
+  .warn   { background: #f3d9c3; color: #8a4f27; }
+  .bad    { background: #eec6bd; color: #8a3124; }
+
+  .delta-up   { color: #3d5132; }
+  .delta-down { color: #8a3124; }
+  .delta-flat { color: var(--muted); }
+
+  .tag-polished { background: #e0ead9; color: #3d5132; }
+  .tag-rough    { background: #efe7d2; color: #6a5c36; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<div class="max-w-6xl mx-auto px-8 pt-10 pb-16">
+
+  <!-- header -->
+  <header class="flex items-baseline justify-between border-b rule pb-6 mb-8">
+    <div>
+      <h1 class="serif text-3xl font-semibold tracking-tight">prose stats</h1>
+      <p class="muted text-sm mt-1">enough · moneysnake</p>
+    </div>
+    <div class="text-right text-xs muted">
+      <div class="mono">run 2026-04-21 11:47</div>
+      <div class="mt-1">3 sections · 4 metrics · vs. last run 2026-04-20 18:02</div>
+    </div>
+  </header>
+
+  <!-- since last run summary -->
+  <section class="mb-10">
+    <h2 class="text-xs uppercase tracking-wider muted font-medium mb-3">since last run</h2>
+    <div class="flex flex-wrap gap-2 text-sm">
+      <span class="px-3 py-1.5 rounded border rule bg-white">
+        <span class="serif italic">02_debt</span>
+        <span class="delta-up ml-2">↑ concreteness</span>
+        <span class="mono text-xs ml-1 muted">+0.18</span>
+      </span>
+      <span class="px-3 py-1.5 rounded border rule bg-white">
+        <span class="serif italic">02_debt</span>
+        <span class="delta-up ml-2">↑ burstiness</span>
+        <span class="mono text-xs ml-1 muted">+0.09</span>
+      </span>
+      <span class="px-3 py-1.5 rounded border rule bg-white">
+        <span class="serif italic">03_coins_banking</span>
+        <span class="delta-down ml-2">↓ concreteness</span>
+        <span class="mono text-xs ml-1 muted">−0.12</span>
+      </span>
+      <span class="px-3 py-1.5 rounded border rule bg-white">
+        <span class="serif italic">01_opening</span>
+        <span class="delta-flat ml-2">= no change</span>
+      </span>
+    </div>
+  </section>
+
+  <!-- section table -->
+  <section>
+    <h2 class="text-xs uppercase tracking-wider muted font-medium mb-3">sections</h2>
+    <div class="border rule rounded overflow-hidden bg-white">
+      <table class="w-full text-sm">
+        <thead class="bg-stone-50 border-b rule">
+          <tr class="text-left text-xs uppercase tracking-wider muted">
+            <th class="px-4 py-3 font-medium">section</th>
+            <th class="px-3 py-3 font-medium">pangram<div class="normal-case text-[10px] muted">slop index · 0–1, lower better</div></th>
+            <th class="px-3 py-3 font-medium">burstiness<div class="normal-case text-[10px] muted">sentence variance · percentile</div></th>
+            <th class="px-3 py-3 font-medium">concreteness<div class="normal-case text-[10px] muted">Brysbaert · percentile</div></th>
+            <th class="px-3 py-3 font-medium">TTR<div class="normal-case text-[10px] muted">vocab richness · percentile</div></th>
+            <th class="px-3 py-3 font-medium">worst flag</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y rule">
+
+          <!-- 01 opening -->
+          <tr class="hover:bg-stone-50">
+            <td class="px-4 py-4 align-top">
+              <a href="section.html" class="block">
+                <div class="serif text-lg font-medium">01_opening</div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="tag-polished text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded">polished</span>
+                  <span class="muted text-xs mono">412 words</span>
+                </div>
+              </a>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip good">
+                <span class="val">0.28</span>
+                <span class="pct">LOW</span>
+              </span>
+              <div class="delta-flat text-xs mt-1 mono">= 0.00</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip ok">
+                <span class="val">p42</span>
+              </span>
+              <div class="delta-flat text-xs mt-1 mono">+0.01</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip good">
+                <span class="val">p68</span>
+              </span>
+              <div class="delta-flat text-xs mt-1 mono">= 0.00</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip good">
+                <span class="val">p71</span>
+              </span>
+              <div class="delta-flat text-xs mt-1 mono">= 0.00</div>
+            </td>
+            <td class="px-3 py-4 align-top text-xs muted italic serif">— no flags ≥ medium</td>
+          </tr>
+
+          <!-- 02 debt -->
+          <tr class="hover:bg-stone-50 bg-stone-50/50">
+            <td class="px-4 py-4 align-top">
+              <a href="section.html" class="block">
+                <div class="serif text-lg font-medium">02_debt</div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="tag-polished text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded">polished</span>
+                  <span class="muted text-xs mono">486 words</span>
+                  <span class="text-[10px] muted">← viewing</span>
+                </div>
+              </a>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip ok">
+                <span class="val">0.34</span>
+                <span class="pct">LOW</span>
+              </span>
+              <div class="delta-up text-xs mt-1 mono">−0.06</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip ok">
+                <span class="val">p38</span>
+              </span>
+              <div class="delta-up text-xs mt-1 mono">+0.09</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip good">
+                <span class="val">p55</span>
+              </span>
+              <div class="delta-up text-xs mt-1 mono">+0.18</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip good">
+                <span class="val">p72</span>
+              </span>
+              <div class="delta-up text-xs mt-1 mono">+0.03</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <div class="serif italic text-xs leading-snug">"The system has a natural ceiling."</div>
+              <div class="text-[10px] mono muted mt-1">concreteness · pangram (2 metrics)</div>
+            </td>
+          </tr>
+
+          <!-- 03 coins banking -->
+          <tr class="hover:bg-stone-50">
+            <td class="px-4 py-4 align-top">
+              <a href="section.html" class="block">
+                <div class="serif text-lg font-medium">03_coins_banking</div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="tag-rough text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded">rough</span>
+                  <span class="muted text-xs mono">1,024 words</span>
+                </div>
+              </a>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip warn">
+                <span class="val">0.61</span>
+                <span class="pct">MED</span>
+              </span>
+              <div class="delta-down text-xs mt-1 mono">+0.04</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip bad">
+                <span class="val">p12</span>
+              </span>
+              <div class="delta-flat text-xs mt-1 mono">= 0.00</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip bad">
+                <span class="val">p22</span>
+              </span>
+              <div class="delta-down text-xs mt-1 mono">−0.12</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <span class="chip ok">
+                <span class="val">p45</span>
+              </span>
+              <div class="delta-flat text-xs mt-1 mono">−0.02</div>
+            </td>
+            <td class="px-3 py-4 align-top">
+              <div class="serif italic text-xs leading-snug">"This multifaceted transformation fundamentally altered the mechanisms by which value was stored and transferred."</div>
+              <div class="text-[10px] mono muted mt-1">pangram · concreteness · burst (3 metrics)</div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- corpus baseline note -->
+  <section class="mt-8 text-xs muted">
+    <p>Percentiles are calibrated against your own polished corpus (01_opening, 02_debt) — not an external baseline. Rough drafts don't count toward calibration.</p>
+  </section>
+
+  <!-- run history -->
+  <section class="mt-10">
+    <h2 class="text-xs uppercase tracking-wider muted font-medium mb-3">run history</h2>
+    <div class="text-sm space-y-1">
+      <div class="flex items-center gap-4">
+        <span class="mono text-xs muted w-44">2026-04-21 11:47</span>
+        <span class="serif">this run</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="mono text-xs muted w-44">2026-04-20 18:02</span>
+        <a class="underline underline-offset-2 decoration-stone-300 hover:decoration-stone-500" href="#">after debt polish pass</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="mono text-xs muted w-44">2026-04-19 09:31</span>
+        <a class="underline underline-offset-2 decoration-stone-300 hover:decoration-stone-500" href="#">baseline</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

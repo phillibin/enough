@@ -7,3 +7,8 @@ __pycache__/
 .DS_Store
 node_modules/
 .astro/
+research/prose_stats_runs/
+research/prose_stats_cache/
+research/prose_stats_mockups/pangram_responses/
+site/public/stats/
+.venv/
