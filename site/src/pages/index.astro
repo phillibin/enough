@@ -19,7 +19,7 @@ const sections = getPolishedDrafts();
 
     {sections.map((section, i) => (
       <Fragment>
-        <section set:html={section.html} />
+        <section id={section.slug} set:html={section.html} />
         {i < sections.length - 1 && <hr />}
       </Fragment>
     ))}
